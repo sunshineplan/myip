@@ -1,0 +1,10 @@
+[Unit]
+Description=uWSGI instance to serve My IP
+After=network.target
+
+[Service]
+Environment=GIN_MODE=release
+ExecStart=/var/www/myip-go/myip-go
+
+[Install]
+WantedBy=multi-user.target
