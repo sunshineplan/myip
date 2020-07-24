@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -21,6 +22,7 @@ import (
 
 const api = "https://api.ipdata.co/%s?api-key=%s"
 
+var apiKey string
 var config metadata.Config
 
 func main() {
@@ -40,8 +42,11 @@ func main() {
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
 
-	key, err := metadata.Get("myip_api_key", &config)
+	m, err := metadata.Get("myip_api_key", &config)
 	if err != nil {
+		log.Fatal(err)
+	}
+	if err := json.Unmarshal(m, &apiKey); err != nil {
 		log.Fatal(err)
 	}
 
@@ -53,7 +58,7 @@ func main() {
 	router.LoadHTMLGlob(filepath.Join(filepath.Dir(self), "templates/*"))
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{"key": key})
+		c.HTML(http.StatusOK, "index.html", gin.H{"key": apiKey})
 	})
 
 	router.GET("/query", func(c *gin.Context) {
@@ -62,10 +67,10 @@ func main() {
 		remote := c.ClientIP()
 		query := c.DefaultQuery("ip", "")
 		if query == "" {
-			resp, err = http.Get(fmt.Sprintf(api, remote, key))
+			resp, err = http.Get(fmt.Sprintf(api, remote, apiKey))
 		} else {
 			ip, _ := net.LookupIP(query)
-			resp, err = http.Get(fmt.Sprintf(api, ip[0], key))
+			resp, err = http.Get(fmt.Sprintf(api, ip[0], apiKey))
 		}
 		if err != nil {
 			log.Println(err)
