@@ -1,6 +1,7 @@
 [Unit]
-Description=uWSGI instance to serve My IP
-After=network.target
+Description=Instance to serve My IP
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 Environment=GIN_MODE=release
