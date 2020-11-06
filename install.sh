@@ -16,8 +16,8 @@ configMyIP() {
     read -p 'Please enter metadata server: ' server
     read -p 'Please enter VerifyHeader header: ' header
     read -p 'Please enter VerifyHeader value: ' value
-    read -p 'Please enter unix socket(default: /var/www/myip-go/myip-go.sock): ' unix
-    [ -z $unix ] && unix=/var/www/myip-go/myip-go.sock
+    read -p 'Please enter unix socket(default: /run/myip-go.sock): ' unix
+    [ -z $unix ] && unix=/run/myip-go.sock
     read -p 'Please enter host(default: 127.0.0.1): ' host
     [ -z $host ] && host=127.0.0.1
     read -p 'Please enter port(default: 12345): ' port

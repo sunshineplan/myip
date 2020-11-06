@@ -9,13 +9,11 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"path/filepath"
-	"runtime"
-	"syscall"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sunshineplan/metadata"
+	"github.com/sunshineplan/utils/server"
 	"github.com/vharitonsky/iniflags"
 )
 
@@ -23,6 +21,8 @@ const api = "https://api.ipdata.co/%s?api-key=%s"
 
 var apiKey string
 var config metadata.Config
+var service server.Options
+var logPath string
 
 func main() {
 	self, err := os.Executable()
@@ -33,10 +33,11 @@ func main() {
 	flag.StringVar(&config.Server, "server", "", "Metadata Server Address")
 	flag.StringVar(&config.VerifyHeader, "header", "", "Verify Header Header Name")
 	flag.StringVar(&config.VerifyValue, "value", "", "Verify Header Value")
-	unix := flag.String("unix", "", "Server Host")
-	host := flag.String("host", "127.0.0.1", "Server Host")
-	port := flag.String("port", "12345", "Server Port")
-	logPath := flag.String("log", "/var/log/app/myip-go.log", "Log Path")
+	flag.StringVar(&service.UNIX, "unix", "", "Server UNIX")
+	flag.StringVar(&service.Host, "host", "127.0.0.1", "Server Host")
+	flag.StringVar(&service.Port, "port", "12345", "Server Port")
+	flag.StringVar(&logPath, "log", "", "Log Path")
+	//flag.StringVar(&logPath, "log", filepath.Join(filepath.Dir(self), "access.log"), "Log Path")
 	iniflags.SetConfigFile(filepath.Join(filepath.Dir(self), "config.ini"))
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
@@ -49,8 +50,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if *logPath != "" {
-		f, err := os.OpenFile(*logPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0640)
+	if logPath != "" {
+		f, err := os.OpenFile(logPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0640)
 		if err != nil {
 			log.Fatalln("Failed to open log file:", err)
 		}
@@ -68,25 +69,23 @@ func main() {
 	})
 
 	router.GET("/query", func(c *gin.Context) {
-		var resp *http.Response
-		var body []byte
-		remote := c.ClientIP()
 		query := c.DefaultQuery("ip", "")
 		if query == "" {
-			resp, err = http.Get(fmt.Sprintf(api, remote, apiKey))
+			query = c.ClientIP()
 		} else {
 			ip, err := net.LookupIP(query)
 			if err != nil {
 				c.JSON(400, gin.H{"message": err.Error()})
 				return
 			}
-			resp, err = http.Get(fmt.Sprintf(api, ip[0], apiKey))
+			query = ip[0].String()
 		}
+		resp, err := http.Get(fmt.Sprintf(api, query, apiKey))
 		if err != nil {
 			c.JSON(500, gin.H{"message": err.Error()})
 			return
 		}
-		body, err = ioutil.ReadAll(resp.Body)
+		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			c.JSON(500, gin.H{"message": err.Error()})
 			return
@@ -94,40 +93,5 @@ func main() {
 		c.Data(resp.StatusCode, "application/json", body)
 	})
 
-	if *unix != "" && runtime.GOOS == "linux" {
-		if _, err := os.Stat(*unix); err == nil {
-			if err := os.Remove(*unix); err != nil {
-				log.Fatal(err)
-			}
-		}
-
-		listener, err := net.Listen("unix", *unix)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		idleConnsClosed := make(chan struct{})
-		go func() {
-			quit := make(chan os.Signal, 1)
-			signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-			<-quit
-
-			if err := listener.Close(); err != nil {
-				log.Printf("HTTP Listener close: %v", err)
-			}
-			if err := os.Remove(*unix); err != nil {
-				log.Printf("Remove socket file: %v", err)
-			}
-			close(idleConnsClosed)
-		}()
-
-		if err := os.Chmod(*unix, 0666); err != nil {
-			log.Fatal(err)
-		}
-
-		http.Serve(listener, router)
-		<-idleConnsClosed
-	} else {
-		router.Run(*host + ":" + *port)
-	}
+	log.Fatal(service.Run(router))
 }
