@@ -28,12 +28,12 @@ tr {
     height: 50px;
 }
 
-.title {
+td:first-child {
     font-size: 1.25em;
     white-space: nowrap;
 }
 
-.info, .navigator {
+td div {
     display: inline-block;
     border: 1px solid #cbcbcb;
     background: #f2f2f2;
@@ -99,7 +99,7 @@ tr {
         display: none;
     }*/
 
-    .title, .info, .navigator {
+    td:first-child, td div {
         font-size: 1em;
     }
 

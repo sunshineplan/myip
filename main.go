@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -42,7 +41,7 @@ func main() {
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
 
-	m, err := metadata.Get("myip_api_key", &config)
+	m, err := config.Get("myip_api_key")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,8 +49,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	f, _ := os.OpenFile(*logPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0640)
-	gin.DefaultWriter = io.MultiWriter(f)
+	if *logPath != "" {
+		f, err := os.OpenFile(*logPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0640)
+		if err != nil {
+			log.Fatalln("Failed to open log file:", err)
+		}
+		gin.DefaultWriter = f
+		gin.DefaultErrorWriter = f
+		log.SetOutput(f)
+	}
 
 	router := gin.Default()
 	router.StaticFS("/static", http.Dir(filepath.Join(filepath.Dir(self), "static")))
@@ -69,23 +75,28 @@ func main() {
 		if query == "" {
 			resp, err = http.Get(fmt.Sprintf(api, remote, apiKey))
 		} else {
-			ip, _ := net.LookupIP(query)
+			ip, err := net.LookupIP(query)
+			if err != nil {
+				c.JSON(400, gin.H{"message": err.Error()})
+				return
+			}
 			resp, err = http.Get(fmt.Sprintf(api, ip[0], apiKey))
 		}
 		if err != nil {
-			log.Println(err)
+			c.JSON(500, gin.H{"message": err.Error()})
+			return
 		}
 		body, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Println(err)
+			c.JSON(500, gin.H{"message": err.Error()})
+			return
 		}
 		c.Data(resp.StatusCode, "application/json", body)
 	})
 
 	if *unix != "" && runtime.GOOS == "linux" {
-		if _, err = os.Stat(*unix); err == nil {
-			err = os.Remove(*unix)
-			if err != nil {
+		if _, err := os.Stat(*unix); err == nil {
+			if err := os.Remove(*unix); err != nil {
 				log.Fatal(err)
 			}
 		}
@@ -110,7 +121,7 @@ func main() {
 			close(idleConnsClosed)
 		}()
 
-		if err = os.Chmod(*unix, 0666); err != nil {
+		if err := os.Chmod(*unix, 0666); err != nil {
 			log.Fatal(err)
 		}
 
