@@ -92,6 +92,7 @@ func main() {
 		}
 		c.Data(resp.StatusCode, "application/json", body)
 	})
-
-	log.Fatal(service.Run(router))
+	if err := service.Run(router); err != nil {
+		log.Fatal(err)
+	}
 }
