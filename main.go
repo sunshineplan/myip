@@ -13,15 +13,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sunshineplan/metadata"
-	"github.com/sunshineplan/utils/server"
+	"github.com/sunshineplan/utils/httpsvr"
 	"github.com/vharitonsky/iniflags"
 )
 
 const api = "https://api.ipdata.co/%s?api-key=%s"
 
 var apiKey string
-var config metadata.Config
-var service server.Options
+var mc metadata.Config
+var server httpsvr.Server
 var logPath string
 
 func main() {
@@ -30,19 +30,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	flag.StringVar(&config.Server, "server", "", "Metadata Server Address")
-	flag.StringVar(&config.VerifyHeader, "header", "", "Verify Header Header Name")
-	flag.StringVar(&config.VerifyValue, "value", "", "Verify Header Value")
-	flag.StringVar(&service.UNIX, "unix", "", "Server UNIX")
-	flag.StringVar(&service.Host, "host", "127.0.0.1", "Server Host")
-	flag.StringVar(&service.Port, "port", "12345", "Server Port")
+	flag.StringVar(&mc.Server, "server", "", "Metadata Server Address")
+	flag.StringVar(&mc.VerifyHeader, "header", "", "Verify Header Header Name")
+	flag.StringVar(&mc.VerifyValue, "value", "", "Verify Header Value")
+	flag.StringVar(&server.Unix, "unix", "", "Server UNIX")
+	flag.StringVar(&server.Host, "host", "127.0.0.1", "Server Host")
+	flag.StringVar(&server.Port, "port", "12345", "Server Port")
 	flag.StringVar(&logPath, "log", "", "Log Path")
 	//flag.StringVar(&logPath, "log", filepath.Join(filepath.Dir(self), "access.log"), "Log Path")
 	iniflags.SetConfigFile(filepath.Join(filepath.Dir(self), "config.ini"))
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
 
-	m, err := config.Get("myip_api_key")
+	m, err := mc.Get("myip_api_key")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,6 +61,7 @@ func main() {
 	}
 
 	router := gin.Default()
+	server.Handler = router
 	router.StaticFS("/static", http.Dir(filepath.Join(filepath.Dir(self), "static")))
 	router.LoadHTMLGlob(filepath.Join(filepath.Dir(self), "templates/*"))
 
@@ -92,7 +93,8 @@ func main() {
 		}
 		c.Data(resp.StatusCode, "application/json", body)
 	})
-	if err := service.Run(router); err != nil {
+
+	if err := server.Run(); err != nil {
 		log.Fatal(err)
 	}
 }

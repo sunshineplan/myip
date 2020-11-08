@@ -27,8 +27,8 @@ github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UV
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/sunshineplan/metadata v0.0.0-20200803020007-3027c995551f h1:Dnw0TpQdwhFUHOm+B0RnFmHtieePfmqOWcsEcHcMwco=
 github.com/sunshineplan/metadata v0.0.0-20200803020007-3027c995551f/go.mod h1:0MYYxq/eL+DQecrRyVk6YGjwf2DUEbQ96nREGYWojyE=
-github.com/sunshineplan/utils v0.0.0-20201106083120-3c5229f2a0a4 h1:zBE8sVgQyZIo0q9aPoP99g6mdR4Lk2Wqo8gziugYq9Q=
-github.com/sunshineplan/utils v0.0.0-20201106083120-3c5229f2a0a4/go.mod h1:fJ8/Fjbd50RwQ8/wxBmBgkuDHfcXrCJu6c/iRsgkYok=
+github.com/sunshineplan/utils v0.0.0-20201107130552-193eecc225e2 h1:oidMMqlSbTA4qLoGJsyWH6CmtDVEKzWQxEKbo3nDBUA=
+github.com/sunshineplan/utils v0.0.0-20201107130552-193eecc225e2/go.mod h1:fJ8/Fjbd50RwQ8/wxBmBgkuDHfcXrCJu6c/iRsgkYok=
 github.com/ugorji/go v1.1.7 h1:/68gy2h+1mWMrwZFeD1kQialdSzAb432dtpeJ42ovdo=
 github.com/ugorji/go v1.1.7/go.mod h1:kZn38zHttfInRq0xu/PH0az30d+z6vm202qpg1oXVMw=
 github.com/ugorji/go/codec v1.1.7 h1:2SvQaVZ1ouYrrKKwoSk2pzd4A9evlKJb9oTL+OaLUSs=
