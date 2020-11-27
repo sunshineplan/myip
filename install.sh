@@ -1,43 +1,43 @@
 #! /bin/bash
 
 installSoftware() {
-    apt -qq -y install nginx
+    apt -qq -y install nginx npm
     apt -qq -y -t $(lsb_release -sc)-backports install golang-go
 }
 
 installMyIP() {
-    curl -Lo- https://github.com/sunshineplan/myip-go/archive/v1.0.tar.gz | tar zxC /var/www
-    mv /var/www/myip-go* /var/www/myip-go
-    cd /var/www/myip-go
-    go build
+    curl -Lo- https://github.com/sunshineplan/myip/archive/v1.0.tar.gz | tar zxC /var/www
+    mv /var/www/myip* /var/www/myip
+    cd /var/www/myip
+    bash build.sh
 }
 
 configMyIP() {
     read -p 'Please enter metadata server: ' server
     read -p 'Please enter VerifyHeader header: ' header
     read -p 'Please enter VerifyHeader value: ' value
-    read -p 'Please enter unix socket(default: /run/myip-go.sock): ' unix
-    [ -z $unix ] && unix=/run/myip-go.sock
+    read -p 'Please enter unix socket(default: /run/myip.sock): ' unix
+    [ -z $unix ] && unix=/run/myip.sock
     read -p 'Please enter host(default: 127.0.0.1): ' host
     [ -z $host ] && host=127.0.0.1
     read -p 'Please enter port(default: 12345): ' port
     [ -z $port ] && port=12345
-    read -p 'Please enter log path(default: /var/log/app/myip-go.log): ' log
-    [ -z $log ] && log=/var/log/app/myip-go.log
+    read -p 'Please enter log path(default: /var/log/app/myip.log): ' log
+    [ -z $log ] && log=/var/log/app/myip.log
     mkdir -p $(dirname $log)
-    sed "s,\$server,$server," /var/www/myip-go/config.ini.default > /var/www/myip-go/config.ini
-    sed -i "s/\$header/$header/" /var/www/myip-go/config.ini
-    sed -i "s/\$value/$value/" /var/www/myip-go/config.ini
-    sed -i "s,\$unix,$unix," /var/www/myip-go/config.ini
-    sed -i "s,\$log,$log," /var/www/myip-go/config.ini
-    sed -i "s/\$host/$host/" /var/www/myip-go/config.ini
-    sed -i "s/\$port/$port/" /var/www/myip-go/config.ini
+    sed "s,\$server,$server," /var/www/myip/config.ini.default > /var/www/myip/config.ini
+    sed -i "s/\$header/$header/" /var/www/myip/config.ini
+    sed -i "s/\$value/$value/" /var/www/myip/config.ini
+    sed -i "s,\$unix,$unix," /var/www/myip/config.ini
+    sed -i "s,\$log,$log," /var/www/myip/config.ini
+    sed -i "s/\$host/$host/" /var/www/myip/config.ini
+    sed -i "s/\$port/$port/" /var/www/myip/config.ini
 }
 
 setupsystemd() {
-    cp -s /var/www/myip-go/myip-go.service /etc/systemd/system
-    systemctl enable myip-go
-    service myip-go start
+    cp -s /var/www/myip/myip.service /etc/systemd/system
+    systemctl enable myip
+    service myip start
 }
 
 writeLogrotateScrip() {
@@ -56,9 +56,9 @@ writeLogrotateScrip() {
 }
 
 setupNGINX() {
-    cp -s /var/www/myip-go/myip-go.conf /etc/nginx/conf.d
-    sed -i "s/\$domain/$domain/" /var/www/myip-go/myip-go.conf
-    sed -i "s,\$unix,$unix," /var/www/myip-go/myip-go.conf
+    cp -s /var/www/myip/myip.conf /etc/nginx/conf.d
+    sed -i "s/\$domain/$domain/" /var/www/myip/myip.conf
+    sed -i "s,\$unix,$unix," /var/www/myip/myip.conf
     service nginx reload
 }
 

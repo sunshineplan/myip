@@ -1,0 +1,180 @@
+<template>
+  <table>
+    <tbody>
+      <tr>
+        <td>IP:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : geo.ip ? geo.ip : "N/A" }}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Country:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : geo.country_name ? geo.country_name : "N/A" }}
+          </div>
+          <img class="flag" v-if="geo.flag" :src="geo.flag" />
+        </td>
+      </tr>
+      <tr>
+        <td>Region:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : geo.region ? geo.region : "N/A" }}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>City:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : geo.city ? geo.city : "N/A" }}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Zip:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : geo.postal ? geo.postal : "N/A" }}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>ISP:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : geo.asn ? geo.asn.name : "N/A" }}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Org:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : geo.carrier ? geo.carrier.name : "N/A" }}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Timezone:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : geo.time_zone ? geo.time_zone.name : "N/A" }}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Localtime:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : localtime }}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Platform:</td>
+        <td>
+          <div :class="{ loading: loading }">{{ loading ? "" : platform }}</div>
+        </td>
+      </tr>
+      <tr>
+        <td>UserAgent:</td>
+        <td>
+          <div :class="{ loading: loading }">
+            {{ loading ? "" : useragent }}
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</template>
+
+<script>
+export default {
+  name: "Info",
+  props: {
+    geo: Object,
+    loading: Boolean,
+  },
+  data() {
+    return {
+      localtime: new Date().toString().split("(")[0].trim(),
+      platform: navigator.platform,
+      useragent: navigator.userAgent,
+    };
+  },
+};
+</script>
+
+<style scoped>
+table {
+  margin: 25px;
+}
+
+tr {
+  height: 50px;
+}
+
+td:first-child {
+  font-size: 1.25em;
+  white-space: nowrap;
+}
+
+td div {
+  display: inline-block;
+  border: 1px solid #cbcbcb;
+  background: #f2f2f2;
+  font-size: 1.25em;
+  padding: 6px;
+}
+
+.flag {
+  margin-left: 8px;
+  vertical-align: text-bottom;
+  box-shadow: 2px 2px 4px 2px #ccc;
+}
+
+.loading {
+  width: 1em;
+  height: 1em;
+  vertical-align: text-bottom;
+  border: 0.5em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  font-size: 0.5em;
+  background-color: transparent;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 767px) {
+  table {
+    margin: 10px;
+  }
+
+  tr {
+    height: 40px;
+  }
+
+  /*tr:nth-last-of-type(1), tr:nth-last-of-type(2) {
+        display: none;
+    }*/
+
+  td:first-child,
+  td div {
+    font-size: 1em;
+  }
+
+  .loading {
+    border-width: 0.25em;
+  }
+}
+</style>

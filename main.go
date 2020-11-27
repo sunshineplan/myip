@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -12,15 +11,15 @@ import (
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sunshineplan/metadata"
 	"github.com/sunshineplan/utils/httpsvr"
+	"github.com/sunshineplan/utils/metadata"
 	"github.com/vharitonsky/iniflags"
 )
 
 const api = "https://api.ipdata.co/%s?api-key=%s"
 
 var apiKey string
-var mc metadata.Config
+var meta metadata.Server
 var server httpsvr.Server
 var logPath string
 
@@ -30,9 +29,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	flag.StringVar(&mc.Server, "server", "", "Metadata Server Address")
-	flag.StringVar(&mc.VerifyHeader, "header", "", "Verify Header Header Name")
-	flag.StringVar(&mc.VerifyValue, "value", "", "Verify Header Value")
+	flag.StringVar(&meta.Addr, "server", "", "Metadata Server Address")
+	flag.StringVar(&meta.Header, "header", "", "Verify Header Header Name")
+	flag.StringVar(&meta.Value, "value", "", "Verify Header Value")
 	flag.StringVar(&server.Unix, "unix", "", "Server UNIX")
 	flag.StringVar(&server.Host, "host", "127.0.0.1", "Server Host")
 	flag.StringVar(&server.Port, "port", "12345", "Server Port")
@@ -42,11 +41,7 @@ func main() {
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
 
-	m, err := mc.Get("myip_api_key")
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := json.Unmarshal(m, &apiKey); err != nil {
+	if err := meta.Get("myip_api_key", &apiKey); err != nil {
 		log.Fatal(err)
 	}
 
@@ -62,11 +57,12 @@ func main() {
 
 	router := gin.Default()
 	server.Handler = router
-	router.StaticFS("/static", http.Dir(filepath.Join(filepath.Dir(self), "static")))
-	router.LoadHTMLGlob(filepath.Join(filepath.Dir(self), "templates/*"))
+	router.StaticFS("/js", http.Dir(filepath.Join(filepath.Dir(self), "dist/js")))
+	router.StaticFS("/css", http.Dir(filepath.Join(filepath.Dir(self), "dist/css")))
+	router.LoadHTMLFiles(filepath.Join(filepath.Dir(self), "dist/index.html"))
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{"key": apiKey})
+		c.HTML(200, "index.html", gin.H{"key": apiKey})
 	})
 
 	router.GET("/query", func(c *gin.Context) {
