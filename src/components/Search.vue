@@ -3,22 +3,14 @@
     <input
       class="form-control"
       placeholder="IPv4 or IPv6 or Host"
-      v-model="address"
-      @keyup.enter="search"
+      v-model="query"
+      @keyup.enter="search()"
     />
     <div class="input-group-append">
-      <button
-        class="btn btn-outline-primary"
-        type="button"
-        @click="async () => await search()"
-      >
+      <button class="btn btn-outline-primary" type="button" @click="search()">
         Search
       </button>
-      <button
-        class="btn btn-outline-danger"
-        type="button"
-        @click="async () => await reset()"
-      >
+      <button class="btn btn-outline-danger" type="button" @click="reset()">
         Reset
       </button>
     </div>
@@ -28,13 +20,23 @@
 <script>
 export default {
   name: "Search",
+  computed: {
+    query: {
+      get() {
+        return this.$store.state.query;
+      },
+      set(value) {
+        this.$store.commit("query", value);
+      },
+    },
+  },
   methods: {
     async search() {
-      await this.get(this.address);
+      await this.$store.dispatch("info", { ip: this.query });
     },
     async reset() {
-      this.address = "";
-      await this.get();
+      this.$store.commit("query", "");
+      await this.$store.dispatch("info", { ip: "" });
     },
   },
 };

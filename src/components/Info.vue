@@ -5,7 +5,7 @@
         <td>IP:</td>
         <td>
           <div :class="{ loading }">
-            {{ loading ? "" : geo.ip ? geo.ip : "N/A" }}
+            {{ loading ? "" : info.ip ? info.ip : "N/A" }}
           </div>
         </td>
       </tr>
@@ -13,16 +13,16 @@
         <td>Country:</td>
         <td>
           <div :class="{ loading }">
-            {{ loading ? "" : geo.country_name ? geo.country_name : "N/A" }}
+            {{ loading ? "" : info.country_name ? info.country_name : "N/A" }}
           </div>
-          <img class="flag" v-if="geo.flag" :src="geo.flag" />
+          <img class="flag" v-if="info.flag" :src="info.flag" />
         </td>
       </tr>
       <tr>
         <td>Region:</td>
         <td>
           <div :class="{ loading }">
-            {{ loading ? "" : geo.region ? geo.region : "N/A" }}
+            {{ loading ? "" : info.region ? info.region : "N/A" }}
           </div>
         </td>
       </tr>
@@ -30,7 +30,7 @@
         <td>City:</td>
         <td>
           <div :class="{ loading }">
-            {{ loading ? "" : geo.city ? geo.city : "N/A" }}
+            {{ loading ? "" : info.city ? info.city : "N/A" }}
           </div>
         </td>
       </tr>
@@ -38,7 +38,7 @@
         <td>Zip:</td>
         <td>
           <div :class="{ loading }">
-            {{ loading ? "" : geo.postal ? geo.postal : "N/A" }}
+            {{ loading ? "" : info.postal ? info.postal : "N/A" }}
           </div>
         </td>
       </tr>
@@ -46,7 +46,7 @@
         <td>ISP:</td>
         <td>
           <div :class="{ loading }">
-            {{ loading ? "" : geo.asn ? geo.asn.name : "N/A" }}
+            {{ loading ? "" : info.asn ? info.asn.name : "N/A" }}
           </div>
         </td>
       </tr>
@@ -54,7 +54,7 @@
         <td>Org:</td>
         <td>
           <div :class="{ loading }">
-            {{ loading ? "" : geo.carrier ? geo.carrier.name : "N/A" }}
+            {{ loading ? "" : info.carrier ? info.carrier.name : "N/A" }}
           </div>
         </td>
       </tr>
@@ -62,7 +62,7 @@
         <td>Timezone:</td>
         <td>
           <div :class="{ loading }">
-            {{ loading ? "" : geo.time_zone ? geo.time_zone.name : "N/A" }}
+            {{ loading ? "" : info.time_zone ? info.time_zone.name : "N/A" }}
           </div>
         </td>
       </tr>
@@ -91,9 +91,13 @@
 <script>
 export default {
   name: "Info",
-  props: {
-    geo: Object,
-    loading: Boolean,
+  computed: {
+    info() {
+      return this.$store.state.info;
+    },
+    loading() {
+      return this.$store.state.loading;
+    },
   },
   data() {
     return {
@@ -101,6 +105,12 @@ export default {
       platform: navigator.platform,
       useragent: navigator.userAgent,
     };
+  },
+  created() {
+    setInterval(
+      () => (this.localtime = new Date().toString().split("(")[0].trim()),
+      1000
+    );
   },
 };
 </script>

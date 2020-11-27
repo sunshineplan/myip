@@ -7,58 +7,38 @@
         class="custom-control-input"
         id="online"
         v-model="online"
-        @change="switcher"
+        @change="switcher()"
       />
       <label class="custom-control-label" for="online">Online Version</label>
     </div>
   </header>
-  <Search ref="search" />
-  <Info :geo="geo" :loading="loading" />
+  <Search />
+  <Info />
 </template>
 
 <script>
-import Swal from "sweetalert2";
 import Search from "@/components/Search.vue";
 import Info from "@/components/Info.vue";
-import { BootstrapButtons } from "@/misc.js";
 
 export default {
   name: "App",
   components: { Search, Info },
-  data() {
-    return {
-      geo: {},
-      loading: false,
-      online: false,
-      api: document.getElementById("app").dataset.api,
-    };
+  computed: {
+    online: {
+      get() {
+        return this.$store.state.online;
+      },
+      set() {
+        this.$store.commit("online");
+      },
+    },
   },
   async created() {
-    await this.get();
+    await this.$store.dispatch("info", { ip: "" });
   },
   methods: {
     async switcher() {
-      if (this.online) {
-        const confirm = await Swal.fire({
-          title: "Warning!",
-          text:
-            "It is recommended using online version only when offline version is not working.",
-          icon: "warning",
-          confirmButtonText: "Continue",
-          showCancelButton: true,
-          focusCancel: true,
-          customClass: {
-            confirmButton: "swal btn btn-primary",
-            cancelButton: "swal btn btn-danger",
-          },
-          buttonsStyling: false,
-        });
-        if (!confirm.value) {
-          this.online = false;
-          return;
-        }
-      }
-      await this.get(this.$refs.search.address);
+      await this.$store.dispatch("switcher");
     },
   },
 };
@@ -78,10 +58,6 @@ export default {
   padding-left: 30px;
 }
 
-.swal {
-  margin: 8px 6px;
-}
-
 @media (max-width: 767px) {
   .navbar {
     border-color: transparent;
@@ -90,5 +66,11 @@ export default {
   .navbar-brand {
     padding-left: 0;
   }
+}
+</style>
+
+<style>
+.swal {
+  margin: 8px 6px;
 }
 </style>
