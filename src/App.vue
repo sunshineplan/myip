@@ -18,14 +18,9 @@
 
 <script>
 import Swal from "sweetalert2";
-import ipaddr from "ipaddr.js";
 import Search from "@/components/Search.vue";
 import Info from "@/components/Info.vue";
-
-const BootstrapButtons = Swal.mixin({
-  customClass: { confirmButton: "swal btn btn-primary" },
-  buttonsStyling: false,
-});
+import { BootstrapButtons } from "@/misc.js";
 
 export default {
   name: "App",
@@ -38,47 +33,13 @@ export default {
       api: document.getElementById("app").dataset.api,
     };
   },
-  created() {
-    this.get();
+  async created() {
+    await this.get();
   },
   methods: {
-    get(ip = "") {
-      var api = "https://api.ipdata.co/{ip}?api-key=" + this.api,
-        url;
-      if (this.online) url = "/query?ip=" + ip;
-      else if (ip == "" || ipaddr.isValid(ip)) url = api.replace("{ip}", ip);
-      else {
-        console.log("Host must be searched on server side.");
-        url = "/query?ip=" + ip;
-      }
-      this.geo = {};
-      this.loading = true;
-      fetch(url)
-        .then((resp) => {
-          if (!resp.ok) {
-            return resp.json().then((err) => {
-              document.title = "My IP";
-              try {
-                BootstrapButtons.fire("Error", err.message, "error");
-              } catch (e) {
-                BootstrapButtons.fire("Error", "Unknown error!", "error");
-              }
-            });
-          }
-          return resp.json().then((json) => {
-            document.title = "IP: " + json.ip;
-            this.geo = json;
-          });
-        })
-        .catch((e) => {
-          document.title = "My IP";
-          BootstrapButtons.fire("Error", e.message, "error");
-        });
-      this.loading = false;
-    },
-    switcher() {
-      if (this.online)
-        Swal.fire({
+    async switcher() {
+      if (this.online) {
+        const confirm = await Swal.fire({
           title: "Warning!",
           text:
             "It is recommended using online version only when offline version is not working.",
@@ -91,11 +52,13 @@ export default {
             cancelButton: "swal btn btn-danger",
           },
           buttonsStyling: false,
-        }).then((confirm) => {
-          if (!confirm.value) this.online = false;
-          else this.get(this.$refs.search.address);
         });
-      else this.get(this.$refs.search.address);
+        if (!confirm.value) {
+          this.online = false;
+          return;
+        }
+      }
+      await this.get(this.$refs.search.address);
     },
   },
 };

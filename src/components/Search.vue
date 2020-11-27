@@ -7,10 +7,18 @@
       @keyup.enter="search"
     />
     <div class="input-group-append">
-      <button class="btn btn-outline-primary" type="button" @click="search">
+      <button
+        class="btn btn-outline-primary"
+        type="button"
+        @click="async () => await search()"
+      >
         Search
       </button>
-      <button class="btn btn-outline-danger" type="button" @click="reset">
+      <button
+        class="btn btn-outline-danger"
+        type="button"
+        @click="async () => await reset()"
+      >
         Reset
       </button>
     </div>
@@ -21,12 +29,12 @@
 export default {
   name: "Search",
   methods: {
-    search: function () {
-      this.$parent.get(this.address);
+    async search() {
+      await this.get(this.address);
     },
-    reset: function () {
+    async reset() {
       this.address = "";
-      this.$parent.get();
+      await this.get();
     },
   },
 };

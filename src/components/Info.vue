@@ -69,9 +69,7 @@
       <tr>
         <td>Localtime:</td>
         <td>
-          <div :class="{ loading }">
-            {{ loading ? "" : localtime }}
-          </div>
+          <div :class="{ loading }">{{ loading ? "" : localtime }}</div>
         </td>
       </tr>
       <tr>
@@ -83,9 +81,7 @@
       <tr>
         <td>UserAgent:</td>
         <td>
-          <div :class="{ loading }">
-            {{ loading ? "" : useragent }}
-          </div>
+          <div :class="{ loading }">{{ loading ? "" : useragent }}</div>
         </td>
       </tr>
     </tbody>
