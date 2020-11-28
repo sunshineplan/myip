@@ -1,7 +1,11 @@
 import { createStore } from 'vuex'
 import ipaddr from 'ipaddr.js'
 import Swal from 'sweetalert2'
-import { BootstrapButtons } from '@/misc.js'
+
+const BootstrapButtons = Swal.mixin({
+  customClass: { confirmButton: 'swal btn btn-primary' },
+  buttonsStyling: false
+})
 
 export default createStore({
   state() {

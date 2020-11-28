@@ -5,7 +5,7 @@ After=network-online.target
 
 [Service]
 Environment=GIN_MODE=release
-ExecStart=/var/www/myip-go/myip-go
+ExecStart=/var/www/myip/myip
 
 [Install]
 WantedBy=multi-user.target
