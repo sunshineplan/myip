@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import ipaddr from 'ipaddr.js'
 import Swal from 'sweetalert2'
+import Cookies from 'js-cookie'
 
 const BootstrapButtons = Swal.mixin({
   customClass: { confirmButton: 'swal btn btn-primary' },
@@ -10,7 +11,7 @@ const BootstrapButtons = Swal.mixin({
 export default createStore({
   state() {
     return {
-      api: document.getElementById('app').dataset.api,
+      api: Cookies.get('api-key'),
       online: false,
       query: '',
       info: {},

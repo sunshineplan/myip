@@ -62,7 +62,10 @@ func main() {
 	router.LoadHTMLFiles(filepath.Join(filepath.Dir(self), "dist/index.html"))
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(200, "index.html", gin.H{"key": apiKey})
+		if _, err := c.Cookie("api-key"); err != nil {
+			c.SetCookie("api-key", apiKey, 0, "", "", false, false)
+		}
+		c.HTML(200, "index.html", nil)
 	})
 
 	router.GET("/query", func(c *gin.Context) {
