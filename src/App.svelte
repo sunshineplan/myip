@@ -11,7 +11,7 @@
     }
   );
 
-  let api = "bfcfe92839ce251a82de50a842d666a0bbf1737cf2416c6e718144aa";
+  let api = "__api__";
   let loading = false;
   let info: { [key: string]: any } = {};
   let query = "";

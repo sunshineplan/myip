@@ -2,14 +2,15 @@
 
 installSoftware() {
     apt -qq -y install nginx
+    apt -qq -y -t $(lsb_release -sc)-backports install npm
 }
 
-installSDA() {
-    curl -Lo /var/www/sda/build/bundle.js https://github.com/sunshineplan/sda/releases/download/v1.0/bundle.js --create-dirs
-    cd /var/www/sda
-    curl -LO https://raw.githubusercontent.com/sunshineplan/sda/main/public/style.css
-    curl -LO https://raw.githubusercontent.com/sunshineplan/sda/main/public/index.html
-    curl -LO https://raw.githubusercontent.com/sunshineplan/sda/main/scripts/sda.conf
+installMyIP() {
+    curl -Lo- https://github.com/sunshineplan/myip/archive/v1.0.tar.gz | tar zxC /var/www
+    mv /var/www/myip* /var/www/myip
+    cd /var/www/myip
+    npm i
+    npm run build -- --environment API:$api
 }
 
 writeLogrotateScrip() {
@@ -28,15 +29,16 @@ writeLogrotateScrip() {
 }
 
 setupNGINX() {
-    cp -s /var/www/sda/sda.conf /etc/nginx/conf.d
-    sed -i "s/\$domain/$domain/" /var/www/sda/sda.conf
+    cp -s /var/www/myip/myip.conf /etc/nginx/conf.d
+    sed -i "s/\$domain/$domain/" /var/www/myip/myip.conf
     service nginx reload
 }
 
 main() {
     read -p 'Please enter domain:' domain
+    read -p 'Please enter api:' api
     installSoftware
-    installSDA
+    installMyIP
     writeLogrotateScrip
     setupNGINX
 }
