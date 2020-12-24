@@ -3,7 +3,7 @@
 
   const dispatch = createEventDispatcher();
 
-  export let query: string;
+  let query = "";
 
   function search(): void {
     dispatch("fetch", { query });

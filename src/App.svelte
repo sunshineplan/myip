@@ -14,23 +14,41 @@
   let api = "__api__";
   let loading = false;
   let info: { [key: string]: any } = {};
-  let query = "";
 
   const BootstrapButtons = Swal.mixin({
     customClass: { confirmButton: "swal btn btn-primary" },
     buttonsStyling: false,
   });
 
-  async function getInfo(): Promise<void> {
+  async function getInfo(query = ""): Promise<void> {
     info = {};
     loading = true;
     if (query && !ipaddr.isValid(query)) {
-      const resp = await fetch(`https://1.1.1.1/dns-query?name=${query}`, {
-        headers: { "Content-Type": "application/dns-json" },
-      });
+      const resp = await fetch(`http://dns.alidns.com/resolve?name=${query}`);
       const json = await resp.json();
-      console.log(json);
-      console.log(query);
+      if (json.Status) {
+        await BootstrapButtons.fire("Error", `Failed to resolve ${query}`, "error");
+        loading = false;
+        return;
+      } else {
+        try {
+          for (let i = 0; i < json.Answer.length; i++) {
+            if (json.Answer[i].type === 1) {
+              query = json.Answer[i].data;
+              break;
+            }
+          }
+        } catch (e) {
+          await BootstrapButtons.fire("Error", e.message, "error");
+          loading = false;
+          return;
+        }
+        if (!query) {
+          await BootstrapButtons.fire("Error", "No DNS record!", "error");
+          loading = false;
+          return;
+        }
+      }
     }
     const url = `https://api.ipdata.co/${query}?api-key=${api}`;
     try {
@@ -38,25 +56,20 @@
       if (!resp.ok) {
         const err = await resp.json();
         document.title = "My IP";
-        try {
-          BootstrapButtons.fire("Error", err.message, "error");
-        } catch (e) {
-          BootstrapButtons.fire("Error", "Unknown error!", "error");
-        }
+        await BootstrapButtons.fire("Error", err.message, "error");
       } else {
         info = await resp.json();
         document.title = "IP: " + info.ip;
       }
     } catch (e) {
       document.title = "My IP";
-      BootstrapButtons.fire("Error", e.message, "error");
+      await BootstrapButtons.fire("Error", e.message, "error");
     }
     loading = false;
   }
 
   function handleFetch(event: CustomEvent) {
-    query = event.detail.query;
-    getInfo();
+    getInfo(event.detail.query);
   }
 </script>
 
@@ -89,6 +102,6 @@
   <header class="navbar navbar-expand flex-column flex-md-row">
     <a class="navbar-brand text-primary m-0 mr-md-3" href="/">My IP</a>
   </header>
-  <Search {query} on:fetch={handleFetch} />
+  <Search on:fetch={handleFetch} />
   <Info {info} {loading} />
 </main>
