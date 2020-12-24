@@ -29,8 +29,8 @@ writeLogrotateScrip() {
 }
 
 setupNGINX() {
-    cp -s /var/www/myip/myip.conf /etc/nginx/conf.d
-    sed -i "s/\$domain/$domain/" /var/www/myip/myip.conf
+    cp -s /var/www/myip/scripts/myip.conf /etc/nginx/conf.d
+    sed -i "s/\$domain/$domain/" /var/www/myip/scripts/myip.conf
     service nginx reload
 }
 
