@@ -21,10 +21,10 @@ jobs:
         with:
           node-version: '15'
 
-      - name: Test Code
+      - name: Build
         run: |
           npm i --no-package-lock
-          npm run build
+          npm run build -- --environment API_KEY:${{ secrets.API_KEY }}
 
       - name: Delete Old Release
         uses: actions/github-script@v3
@@ -68,3 +68,9 @@ jobs:
           body: ${{ steps.date.outputs.date }}
           draft: false
           prerelease: false
+
+      - name: GitHub Pages Deploy
+        uses: maxheld83/ghpages@v0.3.0
+        env:
+          BUILD_DIR: "public/"
+          GH_PAT: ${{ secrets.GH_PAT }}

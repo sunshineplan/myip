@@ -10,7 +10,7 @@ installMyIP() {
     mv /var/www/myip* /var/www/myip
     cd /var/www/myip
     npm i
-    npm run build -- --environment API:$api
+    npm run build -- --environment API_KEY:$api_key
 }
 
 writeLogrotateScrip() {
@@ -36,7 +36,7 @@ setupNGINX() {
 
 main() {
     read -p 'Please enter domain:' domain
-    read -p 'Please enter api:' api
+    read -p 'Please enter API key:' api_key
     installSoftware
     installMyIP
     writeLogrotateScrip

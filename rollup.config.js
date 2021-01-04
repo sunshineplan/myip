@@ -9,7 +9,7 @@ import css from 'rollup-plugin-css-only';
 import replace from '@rollup/plugin-replace';
 
 const production = !process.env.ROLLUP_WATCH;
-const api = process.env.API;
+const api_key = process.env.API_KEY;
 
 function serve() {
 	let server;
@@ -41,7 +41,7 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
-		replace({ __api__: api }),
+		replace({ __api_key__: api_key }),
 		svelte({
 			preprocess: sveltePreprocess(),
 			compilerOptions: {

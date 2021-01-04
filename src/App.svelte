@@ -11,7 +11,7 @@
     }
   );
 
-  let api = "__api__";
+  let api_key = "__api_key__";
   let loading = false;
   let info: { [key: string]: any } = {};
 
@@ -50,7 +50,7 @@
         }
       }
     }
-    const url = `https://api.ipdata.co/${query}?api-key=${api}`;
+    const url = `https://api.ipdata.co/${query}?api-key=${api_key}`;
     try {
       const resp = await fetch(url);
       if (!resp.ok) {
