@@ -2,15 +2,11 @@
 
 installSoftware() {
     apt -qq -y install nginx
-    apt -qq -y -t $(lsb_release -sc)-backports install npm
 }
 
 installMyIP() {
-    curl -Lo- https://github.com/sunshineplan/myip/archive/v1.0.tar.gz | tar zxC /var/www
-    mv /var/www/myip* /var/www/myip
-    cd /var/www/myip
-    npm i
-    npm run build -- --environment API_KEY:$api_key
+    mkdir -p /var/www/myip
+    curl -Lo- https://github.com/sunshineplan/myip/releases/download/v1.0/release.tar.gz | tar zxC /var/www/myip
 }
 
 writeLogrotateScrip() {
@@ -36,7 +32,6 @@ setupNGINX() {
 
 main() {
     read -p 'Please enter domain:' domain
-    read -p 'Please enter API key:' api_key
     installSoftware
     installMyIP
     writeLogrotateScrip
