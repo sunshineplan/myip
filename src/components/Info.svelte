@@ -1,19 +1,108 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import type { ipdata } from "../misc";
 
-  export let info: { [key: string]: any };
-  export let loading: boolean;
   const platform = navigator.platform;
   const useragent = navigator.userAgent;
+
+  export let info: ipdata;
+  export let loading: boolean;
+
   let localtime = new Date().toString().split("(")[0].trim();
 
-  onMount((): void => {
+  onMount(() => {
     setInterval(
       () => (localtime = new Date().toString().split("(")[0].trim()),
       1000
     );
   });
 </script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>IP:</td>
+      <td>
+        <div class:loading>{loading ? "" : info.ip ? info.ip : "N/A"}</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Country:</td>
+      <td>
+        <div class:loading>
+          {loading ? "" : info.country_name ? info.country_name : "N/A"}
+        </div>
+        {#if info.flag}
+          <img class="flag" alt={info.country_name} src={info.flag} />
+        {/if}
+      </td>
+    </tr>
+    <tr>
+      <td>Region:</td>
+      <td>
+        <div class:loading>
+          {loading ? "" : info.region ? info.region : "N/A"}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>City:</td>
+      <td>
+        <div class:loading>{loading ? "" : info.city ? info.city : "N/A"}</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Zip:</td>
+      <td>
+        <div class:loading>
+          {loading ? "" : info.postal ? info.postal : "N/A"}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>ISP:</td>
+      <td>
+        <div class:loading>
+          {loading ? "" : info.asn ? info.asn.name : "N/A"}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>Org:</td>
+      <td>
+        <div class:loading>
+          {loading ? "" : info.carrier ? info.carrier.name : "N/A"}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>Timezone:</td>
+      <td>
+        <div class:loading>
+          {loading ? "" : info.time_zone ? info.time_zone.name : "N/A"}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>Localtime:</td>
+      <td>
+        <div class:loading>{loading ? "" : localtime}</div>
+      </td>
+    </tr>
+    <tr>
+      <td>Platform:</td>
+      <td>
+        <div class:loading>{loading ? "" : platform}</div>
+      </td>
+    </tr>
+    <tr>
+      <td>UserAgent:</td>
+      <td>
+        <div class:loading>{loading ? "" : useragent}</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <style>
   table {
@@ -84,89 +173,3 @@
     }
   }
 </style>
-
-<table>
-  <tbody>
-    <tr>
-      <td>IP:</td>
-      <td>
-        <div class:loading>{loading ? '' : info.ip ? info.ip : 'N/A'}</div>
-      </td>
-    </tr>
-    <tr>
-      <td>Country:</td>
-      <td>
-        <div class:loading>
-          {loading ? '' : info.country_name ? info.country_name : 'N/A'}
-        </div>
-        {#if info.flag}
-          <img class="flag" alt={info.country_name} src={info.flag} />
-        {/if}
-      </td>
-    </tr>
-    <tr>
-      <td>Region:</td>
-      <td>
-        <div class:loading>
-          {loading ? '' : info.region ? info.region : 'N/A'}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>City:</td>
-      <td>
-        <div class:loading>{loading ? '' : info.city ? info.city : 'N/A'}</div>
-      </td>
-    </tr>
-    <tr>
-      <td>Zip:</td>
-      <td>
-        <div class:loading>
-          {loading ? '' : info.postal ? info.postal : 'N/A'}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>ISP:</td>
-      <td>
-        <div class:loading>
-          {loading ? '' : info.asn ? info.asn.name : 'N/A'}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>Org:</td>
-      <td>
-        <div class:loading>
-          {loading ? '' : info.carrier ? info.carrier.name : 'N/A'}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>Timezone:</td>
-      <td>
-        <div class:loading>
-          {loading ? '' : info.time_zone ? info.time_zone.name : 'N/A'}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>Localtime:</td>
-      <td>
-        <div class:loading>{loading ? '' : localtime}</div>
-      </td>
-    </tr>
-    <tr>
-      <td>Platform:</td>
-      <td>
-        <div class:loading>{loading ? '' : platform}</div>
-      </td>
-    </tr>
-    <tr>
-      <td>UserAgent:</td>
-      <td>
-        <div class:loading>{loading ? '' : useragent}</div>
-      </td>
-    </tr>
-  </tbody>
-</table>

@@ -5,19 +5,33 @@
 
   let query = "";
 
-  function search(): void {
+  const search = () => {
     dispatch("fetch", { query });
-  }
-
-  function onKeyPress(e: KeyboardEvent): void {
-    if (e.key === "Enter") search();
-  }
-
-  function reset(): void {
-    query = "";
-    search();
-  }
+  };
 </script>
+
+<div class="input-group search">
+  <input
+    class="form-control"
+    placeholder="IPv4 or IPv6 or Host"
+    bind:value={query}
+    on:keypress={(e) => {
+      if (e.key === "Enter") search();
+    }}
+  />
+  <div class="input-group-append">
+    <button class="btn btn-outline-primary" type="button" on:click={search}>
+      Search
+    </button>
+    <button
+      class="btn btn-outline-danger"
+      type="button"
+      on:click={() => {
+        query = "";
+        search();
+      }}> Reset </button>
+  </div>
+</div>
 
 <style>
   .search {
@@ -40,19 +54,3 @@
     }
   }
 </style>
-
-<div class="input-group search">
-  <input
-    class="form-control"
-    placeholder="IPv4 or IPv6 or Host"
-    bind:value={query}
-    on:keypress={onKeyPress} />
-  <div class="input-group-append">
-    <button class="btn btn-outline-primary" type="button" on:click={search}>
-      Search
-    </button>
-    <button class="btn btn-outline-danger" type="button" on:click={reset}>
-      Reset
-    </button>
-  </div>
-</div>
