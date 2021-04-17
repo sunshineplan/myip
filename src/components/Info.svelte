@@ -10,6 +10,14 @@
 
   let localtime = new Date().toString().split("(")[0].trim();
 
+  const getMap = async (ip: string) => {
+    const resp = await fetch("https://ipinfo.io/map", {
+      method: "post",
+      body: new URLSearchParams(`ips=${ip}`),
+    });
+    return resp.url;
+  };
+
   onMount(() => {
     setInterval(
       () => (localtime = new Date().toString().split("(")[0].trim()),
@@ -33,7 +41,12 @@
           {loading ? "" : info.country_name ? info.country_name : "N/A"}
         </div>
         {#if info.flag}
-          <img class="flag" alt={info.country_name} src={info.flag} />
+          <img
+            class="flag"
+            alt={info.country_name}
+            src={info.flag}
+            on:click={async () => window.open(await getMap(info.ip))}
+          />
         {/if}
       </td>
     </tr>
@@ -130,6 +143,7 @@
     margin-left: 8px;
     vertical-align: text-bottom;
     box-shadow: 2px 2px 4px 2px #ccc;
+    cursor: pointer;
   }
 
   .loading {

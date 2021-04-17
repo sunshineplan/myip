@@ -29,7 +29,10 @@
       on:click={() => {
         query = "";
         search();
-      }}> Reset </button>
+      }}
+    >
+      Reset
+    </button>
   </div>
 </div>
 
