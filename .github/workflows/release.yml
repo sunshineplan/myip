@@ -2,7 +2,7 @@ name: Release
 
 on:
   workflow_run:
-    workflows: [ "Test" ]
+    workflows: [ Test ]
     branches: [ main ]
     types: 
       - completed
@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: '15'
+          node-version: '16'
 
       - name: Delete Old Release
         uses: actions/github-script@v3
@@ -54,33 +54,18 @@ jobs:
         run: |
           npm i --no-package-lock
           npm run build -- --environment API_KEY:${{ secrets.API_KEY }}
+          tar cvzf release.tar.gz -C public . ../scripts
           echo "::set-output name=date::$(TZ=CST date +'%Y-%m-%d')"
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v1.0
-          release_name: ${{ steps.build.outputs.date }}
+          name: ${{ steps.build.outputs.date }}
           body: ${{ steps.build.outputs.date }}
-          draft: false
-          prerelease: false
-
-      - name: Zip release files
-        run: |
-          tar cvzf release.tar.gz -C public . ../scripts
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release.tar.gz
-          asset_name: release.tar.gz
-          asset_content_type: application/gzip
+          files: release.tar.gz
 
       - name: GitHub Pages Deploy
         uses: peaceiris/actions-gh-pages@v3

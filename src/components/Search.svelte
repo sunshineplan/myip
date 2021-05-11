@@ -19,21 +19,19 @@
       if (e.key === "Enter") search();
     }}
   />
-  <div class="input-group-append">
-    <button class="btn btn-outline-primary" type="button" on:click={search}>
-      Search
-    </button>
-    <button
-      class="btn btn-outline-danger"
-      type="button"
-      on:click={() => {
-        query = "";
-        search();
-      }}
-    >
-      Reset
-    </button>
-  </div>
+  <button class="btn btn-outline-primary" type="button" on:click={search}>
+    Search
+  </button>
+  <button
+    class="btn btn-outline-danger"
+    type="button"
+    on:click={() => {
+      query = "";
+      search();
+    }}
+  >
+    Reset
+  </button>
 </div>
 
 <style>
@@ -52,7 +50,6 @@
       top: 0;
       right: 0;
       width: 80%;
-      padding-top: 1em;
       margin: auto;
     }
   }
