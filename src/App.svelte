@@ -33,7 +33,10 @@
             }
           }
         } catch (e) {
-          await fire("Error", e.message, "error");
+          let message = "";
+          if (typeof e === "string") message = e;
+          else if (e instanceof Error) message = e.message;
+          await fire("Error", message, "error");
           loading = false;
           return;
         }
@@ -57,7 +60,10 @@
       }
     } catch (e) {
       document.title = "My IP";
-      await fire("Error", e.message, "error");
+      let message = "";
+      if (typeof e === "string") message = e;
+      else if (e instanceof Error) message = e.message;
+      await fire("Error", message, "error");
     }
     loading = false;
   };

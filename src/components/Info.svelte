@@ -41,6 +41,7 @@
           {loading ? "" : info.country_name ? info.country_name : "N/A"}
         </div>
         {#if info.flag}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
           <img
             class="flag"
             alt={info.country_name}
