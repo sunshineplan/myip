@@ -28,6 +28,6 @@
   "dependencies": {
     "ipaddr.js": "^2.0.1",
     "sirv-cli": "^2.0.2",
-    "sweetalert2": "^11.6.8"
+    "sweetalert2": "^11.6.9"
   }
 }
