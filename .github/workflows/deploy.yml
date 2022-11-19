@@ -26,11 +26,11 @@ jobs:
       - name: Build
         run: |
           npm install
-          npm run build -- --environment API_KEY:${{ secrets.API_KEY }}
+          VITE_API_KEY=${{ secrets.API_KEY }} npm run build
 
       - name: GitHub Pages Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./dist
           cname: ${{ secrets.CNAME }}
