@@ -72,6 +72,12 @@
 <main>
   <header class="navbar navbar-expand flex-column flex-md-row">
     <a class="navbar-brand text-primary m-0 mr-md-3" href="/">My IP</a>
+    <a href="https://www.weatherapi.com/" title="Free Weather API">
+      <img
+        src="https://cdn.weatherapi.com/v4/images/weatherapi_logo.png"
+        alt="Weather data by WeatherAPI.com"
+      />
+    </a>
   </header>
   <Search on:fetch={async (e) => await getInfo(e.detail.query)} />
   <Info {info} {loading} />

@@ -15,7 +15,8 @@
       method: "post",
       body: new URLSearchParams(`ips=${ip}`),
     });
-    return resp.url;
+    const json = await resp.json();
+    return json.reportUrl ? (json.reportUrl as string) : "";
   };
 
   onMount(() => {
@@ -66,26 +67,10 @@
       </td>
     </tr>
     <tr>
-      <td>Zip:</td>
-      <td>
-        <div class:loading>
-          {loading ? "" : info.postal ? info.postal : "N/A"}
-        </div>
-      </td>
-    </tr>
-    <tr>
       <td>ISP:</td>
       <td>
         <div class:loading>
           {loading ? "" : info.asn ? info.asn.name : "N/A"}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>Org:</td>
-      <td>
-        <div class:loading>
-          {loading ? "" : info.carrier ? info.carrier.name : "N/A"}
         </div>
       </td>
     </tr>
