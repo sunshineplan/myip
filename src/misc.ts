@@ -12,6 +12,25 @@ export interface ipdata {
   time_zone: { name: string }
 }
 
+export interface weather {
+  temp_c: number
+  feelslike_c: number
+  humidity: number
+  precip_mm: number
+  vis_km: number
+  cloud: number
+  wind_kph: number
+  wind_degree: number
+  wind_dir: string
+  gust_kph: string
+  pressure_mb: number
+  uv: number
+  condition: {
+    text: string
+    icon: string
+  }
+}
+
 export const fire = async (
   title?: string | undefined,
   html?: string | undefined,

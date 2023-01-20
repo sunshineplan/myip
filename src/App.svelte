@@ -4,7 +4,7 @@
   import Search from "./components/Search.svelte";
   import Info from "./components/Info.svelte";
   import { fire } from "./misc";
-  import type { ipdata } from "./misc";
+  import type { ipdata, weather } from "./misc";
 
   onMount(async () => {
     await getInfo();
@@ -13,6 +13,7 @@
   let api_key = "__api_key__";
   let loading = false;
   let info: ipdata = {} as ipdata;
+  let weather: weather;
 
   const getInfo = async (query = "") => {
     info = {} as ipdata;
@@ -47,9 +48,10 @@
         }
       }
     }
-    const url = `https://api.ipdata.co/${query}?api-key=${api_key}`;
     try {
-      const resp = await fetch(url);
+      const resp = await fetch(
+        `https://api.ipdata.co/${query}?api-key=${api_key}`
+      );
       if (!resp.ok) {
         const err = await resp.json();
         document.title = "My IP";
@@ -60,6 +62,25 @@
       }
     } catch (e) {
       document.title = "My IP";
+      let message = "";
+      if (typeof e === "string") message = e;
+      else if (e instanceof Error) message = e.message;
+      await fire("Error", message, "error");
+      return;
+    }
+    try {
+      const resp = await fetch(
+        `https://weather.sunshineplan.cc/current?q=${info.ip}`,
+        { method: "post" }
+      );
+      if (!resp.ok) {
+        const err = await resp.json();
+        await fire("Error", err.message, "error");
+      } else {
+        const json = await resp.json();
+        weather = json.current;
+      }
+    } catch (e) {
       let message = "";
       if (typeof e === "string") message = e;
       else if (e instanceof Error) message = e.message;
@@ -80,7 +101,7 @@
     </a>
   </header>
   <Search on:fetch={async (e) => await getInfo(e.detail.query)} />
-  <Info {info} {loading} />
+  <Info {info} {weather} {loading} />
 </main>
 
 <style>
