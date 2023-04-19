@@ -104,9 +104,7 @@
       <td>Weather:</td>
       <td>
         <div class:loading>
-          {#if loading}
-            ""
-          {:else if weather}
+          {#if loading}{:else if weather}
             <div style="display:flex">
               <img alt={weather.condition.text} src={weather.condition.icon} />
               <span style="font-size:40px">{weather.temp_c}°C</span>
@@ -120,7 +118,8 @@
                   viewBox="0 0 1000 1000"
                   enable-background="new 0 0 1000 1000"
                   xml:space="preserve"
-                  style="transform:rotate({weather.wind_degree+180}deg);height:8pt"
+                  style="transform:rotate({180 +
+                    weather.wind_degree}deg);height:8pt"
                 >
                   <g fill="#48484a">
                     <path
@@ -183,7 +182,7 @@
               </li>
             </ul>
           {:else}
-            "N/A"
+            N/A
           {/if}
         </div>
       </td>
