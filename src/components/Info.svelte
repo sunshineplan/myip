@@ -102,7 +102,7 @@
     </tr>
     <tr>
       <td>Weather:</td>
-      <td>
+      <td class:info={!weather}>
         <div class:loading>
           {#if loading}{:else if weather}
             <div style="display:flex">
