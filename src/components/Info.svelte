@@ -120,7 +120,7 @@
                   viewBox="0 0 1000 1000"
                   enable-background="new 0 0 1000 1000"
                   xml:space="preserve"
-                  style="transform:rotate({weather.wind_degree}deg);height:8pt"
+                  style="transform:rotate({-weather.wind_degree}deg);height:8pt"
                 >
                   <g fill="#48484a">
                     <path
