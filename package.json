@@ -14,7 +14,7 @@
     "@types/node": "^20.2.5",
     "ipaddr.js": "^2.0.1",
     "svelte": "^3.59.1",
-    "svelte-check": "^3.3.2",
+    "svelte-check": "^3.4.3",
     "sweetalert2": "^11.7.6",
     "tslib": "^2.5.2",
     "typescript": "^5.0.4",
