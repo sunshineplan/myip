@@ -107,10 +107,10 @@
           {#if loading}{:else if weather}
             <div style="display:flex">
               <img alt={weather.condition.text} src={weather.condition.icon} />
-              <span style="font-size:40px">{weather.temp_c}</span>
+              <span style="font-size:40px">{weather.temp_c}°C</span>
             </div>
             <div style="font-weight:700">
-              {weather.condition.text}, Feels like {weather.feelslike_c}
+              {weather.condition.text}, Feels like {weather.feelslike_c}°C
             </div>
             <ul class="weather-items">
               <li>
@@ -130,7 +130,7 @@
                     />
                   </g>
                 </svg>
-                {weather.wind_kph} {weather.wind_dir}
+                {weather.wind_kph}km/h {weather.wind_dir}
               </li>
               <li>
                 <svg
