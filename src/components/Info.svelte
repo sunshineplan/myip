@@ -1,11 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { ipdata, weather } from "../misc";
 
   const useragent = navigator.userAgent;
 
-  export let info: ipdata;
-  export let weather: weather;
+  export let info: IPData;
+  export let weather: Weather;
   export let loading: boolean;
 
   let localtime = new Date().toString().split("(")[0].trim();
@@ -22,7 +21,7 @@
   onMount(() => {
     setInterval(
       () => (localtime = new Date().toString().split("(")[0].trim()),
-      1000
+      1000,
     );
   });
 </script>
@@ -32,17 +31,18 @@
     <tr>
       <td>IP:</td>
       <td class="info">
-        <div class:loading>{loading ? "" : info.ip ? info.ip : "N/A"}</div>
+        <div class:loading>{loading ? "" : info.ip || "N/A"}</div>
       </td>
     </tr>
     <tr>
       <td>Country:</td>
       <td class="info">
         <div class:loading>
-          {loading ? "" : info.country_name ? info.country_name : "N/A"}
+          {loading ? "" : info.country_name || "N/A"}
         </div>
         {#if info.flag}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <img
             class="flag"
             alt={info.country_name}
@@ -56,14 +56,14 @@
       <td>Region:</td>
       <td class="info">
         <div class:loading>
-          {loading ? "" : info.region ? info.region : "N/A"}
+          {loading ? "" : info.region || "N/A"}
         </div>
       </td>
     </tr>
     <tr>
       <td>City:</td>
       <td class="info">
-        <div class:loading>{loading ? "" : info.city ? info.city : "N/A"}</div>
+        <div class:loading>{loading ? "" : info.city || "N/A"}</div>
       </td>
     </tr>
     <tr>
@@ -78,13 +78,7 @@
       <td>Timezone:</td>
       <td class="info">
         <div class:loading>
-          {loading
-            ? ""
-            : info.time_zone
-            ? info.time_zone.name
-              ? info.time_zone.name
-              : "N/A"
-            : "N/A"}
+          {loading ? "" : info.time_zone ? info.time_zone.name || "N/A" : "N/A"}
         </div>
       </td>
     </tr>
@@ -178,7 +172,7 @@
               </li>
               <li>
                 <span class="symbol">Precipitation:</span>
-                {weather.precip_mm ? weather.precip_mm : 0}mm
+                {weather.precip_mm || 0}mm
               </li>
             </ul>
           {:else}

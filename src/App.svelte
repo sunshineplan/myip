@@ -1,10 +1,9 @@
 <script lang="ts">
   import ipaddr from "ipaddr.js";
   import { onMount } from "svelte";
-  import Search from "./components/Search.svelte";
+  import Swal from "sweetalert2";
   import Info from "./components/Info.svelte";
-  import { fire } from "./misc";
-  import type { ipdata, weather } from "./misc";
+  import Search from "./components/Search.svelte";
 
   onMount(async () => {
     await getInfo();
@@ -12,11 +11,11 @@
 
   let api_key = "__api_key__";
   let loading = false;
-  let info: ipdata = {} as ipdata;
-  let weather: weather;
+  let info: IPData;
+  let weather: Weather;
 
   const getInfo = async (query = "") => {
-    info = {} as ipdata;
+    info = {} as IPData;
     loading = true;
     if (query && !ipaddr.isValid(query)) {
       const resp = await fetch(`https://dns.alidns.com/resolve?name=${query}`);
@@ -50,7 +49,7 @@
     }
     try {
       const resp = await fetch(
-        `https://api.ipdata.co/${query}?api-key=${api_key}`
+        `https://api.ipdata.co/${query}?api-key=${api_key}`,
       );
       if (!resp.ok) {
         const err = await resp.json();
@@ -71,7 +70,7 @@
     try {
       const resp = await fetch(
         `https://weather.sunshineplan.cc/current?q=${info.ip}`,
-        { method: "post" }
+        { method: "post" },
       );
       if (!resp.ok) {
         const err = await resp.json();
@@ -87,6 +86,17 @@
       await fire("Error", message, "error");
     }
     loading = false;
+  };
+
+  const fire = async (
+    title?: string | undefined,
+    html?: string | undefined,
+    icon?: "success" | "error" | "warning" | "info" | "question" | undefined,
+  ) => {
+    return Swal.mixin({
+      customClass: { confirmButton: "swal btn btn-primary" },
+      buttonsStyling: false,
+    }).fire(title, html, icon);
   };
 </script>
 
