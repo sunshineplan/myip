@@ -11,11 +11,11 @@
 
   let api_key = "__api_key__";
   let loading = false;
-  let info: IPData;
+  let info: IPData = { ip: "" };
   let weather: Weather;
 
   const getInfo = async (query = "") => {
-    info = {} as IPData;
+    info = { ip: "" };
     loading = true;
     if (query && !ipaddr.isValid(query)) {
       const resp = await fetch(`https://dns.alidns.com/resolve?name=${query}`);
