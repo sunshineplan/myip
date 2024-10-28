@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  let {
+    getInfo,
+  }: {
+    getInfo: (query?: string) => Promise<void>;
+  } = $props();
 
-  const dispatch = createEventDispatcher();
+  let query = $state("");
 
-  let query = "";
-
-  const search = () => {
-    dispatch("fetch", { query });
+  const search = async () => {
+    await getInfo(query);
   };
 </script>
 
@@ -15,19 +17,19 @@
     class="form-control"
     placeholder="IPv4 or IPv6 or Host"
     bind:value={query}
-    on:keypress={(e) => {
-      if (e.key === "Enter") search();
+    onkeypress={async (e) => {
+      if (e.key === "Enter") await search();
     }}
   />
-  <button class="btn btn-outline-primary" type="button" on:click={search}>
+  <button class="btn btn-outline-primary" type="button" onclick={search}>
     Search
   </button>
   <button
     class="btn btn-outline-danger"
     type="button"
-    on:click={() => {
+    onclick={async () => {
       query = "";
-      search();
+      await search();
     }}
   >
     Reset

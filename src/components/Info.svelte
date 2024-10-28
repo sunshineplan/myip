@@ -3,11 +3,17 @@
 
   const useragent = navigator.userAgent;
 
-  export let info: IPData;
-  export let weather: Weather;
-  export let loading: boolean;
+  let {
+    info,
+    weather,
+    loading,
+  }: {
+    info: IPData;
+    weather: Weather;
+    loading: boolean;
+  } = $props();
 
-  let localtime = new Date().toString().split("(")[0].trim();
+  let localtime = $state(new Date().toString().split("(")[0].trim());
 
   const getMap = async (ip: string) => {
     const resp = await fetch("https://ipinfo.io/map", {
@@ -41,13 +47,13 @@
           {loading ? "" : info.country_name || "N/A"}
         </div>
         {#if info.flag}
-          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <img
             class="flag"
             alt={info.country_name}
             src={info.flag}
-            on:click={async () => window.open(await getMap(info.ip))}
+            onclick={async () => window.open(await getMap(info.ip))}
           />
         {/if}
       </td>

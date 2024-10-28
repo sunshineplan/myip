@@ -10,9 +10,9 @@
   });
 
   let api_key = "__api_key__";
-  let loading = false;
-  let info: IPData = { ip: "" };
-  let weather: Weather;
+  let loading = $state(false);
+  let info = $state<IPData>({ ip: "" });
+  let weather = $state({} as Weather);
 
   const getInfo = async (query = "") => {
     info = { ip: "" };
@@ -114,7 +114,7 @@
       />
     </a>
   </header>
-  <Search on:fetch={async (e) => await getInfo(e.detail.query)} />
+  <Search {getInfo} />
   <Info {info} {weather} {loading} />
 </main>
 
