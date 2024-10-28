@@ -9,7 +9,7 @@
     loading,
   }: {
     info: IPData;
-    weather: Weather;
+    weather: Weather | undefined;
     loading: boolean;
   } = $props();
 

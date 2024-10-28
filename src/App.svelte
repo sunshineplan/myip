@@ -12,7 +12,7 @@
   let api_key = "__api_key__";
   let loading = $state(false);
   let info = $state<IPData>({ ip: "" });
-  let weather = $state({} as Weather);
+  let weather = $state<Weather>();
 
   const getInfo = async (query = "") => {
     info = { ip: "" };
