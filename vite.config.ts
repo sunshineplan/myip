@@ -8,7 +8,7 @@ const replace = (): Plugin => {
     name: 'replace',
     transform(src) {
       return {
-        code: src.replace('__api_key__', api_key ? api_key : ''),
+        code: src.replace('__api_key__', api_key || ''),
         map: null
       }
     }

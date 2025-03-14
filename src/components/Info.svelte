@@ -46,7 +46,7 @@
         <div class:loading>
           {loading ? "" : info.location?.country || "N/A"}
         </div>
-        {#if info.location?.country_code}
+        {#if !loading && info.location?.country_code}
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <img
