@@ -9,9 +9,8 @@
     await getInfo();
   });
 
-  let api_key = "__api_key__";
   let loading = $state(false);
-  let info = $state<IPData>({ ip: "" });
+  let info = $state<IPInfo>({ ip: "" });
   let weather = $state<Weather>();
 
   const getInfo = async (query = "") => {
@@ -48,9 +47,7 @@
       }
     }
     try {
-      const resp = await fetch(
-        `https://api.ipdata.co/${query}?api-key=${api_key}`,
-      );
+      const resp = await fetch(`https://api.ipquery.io/${query}?format=json`);
       if (!resp.ok) {
         const err = await resp.json();
         document.title = "My IP";

@@ -8,7 +8,7 @@
     weather,
     loading,
   }: {
-    info: IPData;
+    info: IPInfo;
     weather: Weather | undefined;
     loading: boolean;
   } = $props();
@@ -44,39 +44,39 @@
       <td>Country:</td>
       <td class="info">
         <div class:loading>
-          {loading ? "" : info.country_name || "N/A"}
+          {loading ? "" : info.location?.country || "N/A"}
         </div>
-        {#if info.flag}
+        {#if info.location?.country_code}
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <img
             class="flag"
-            alt={info.country_name}
-            src={info.flag}
+            alt={info.location?.country}
+            src="https://flagcdn.com/h24/{info.location.country_code.toLowerCase()}.png"
             onclick={async () => window.open(await getMap(info.ip))}
           />
         {/if}
       </td>
     </tr>
     <tr>
-      <td>Region:</td>
+      <td>State:</td>
       <td class="info">
         <div class:loading>
-          {loading ? "" : info.region || "N/A"}
+          {loading ? "" : info.location?.state || "N/A"}
         </div>
       </td>
     </tr>
     <tr>
       <td>City:</td>
       <td class="info">
-        <div class:loading>{loading ? "" : info.city || "N/A"}</div>
+        <div class:loading>{loading ? "" : info.location?.city || "N/A"}</div>
       </td>
     </tr>
     <tr>
       <td>ISP:</td>
       <td class="info">
         <div class:loading>
-          {loading ? "" : info.asn ? info.asn.name : "N/A"}
+          {loading ? "" : info.isp?.isp || "N/A"}
         </div>
       </td>
     </tr>
@@ -84,7 +84,7 @@
       <td>Timezone:</td>
       <td class="info">
         <div class:loading>
-          {loading ? "" : info.time_zone ? info.time_zone.name || "N/A" : "N/A"}
+          {loading ? "" : info.location?.timezone || "N/A"}
         </div>
       </td>
     </tr>
