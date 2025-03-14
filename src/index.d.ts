@@ -1,13 +1,15 @@
-interface IPData {
+interface IPInfo {
   ip: string
-  country_name?: string
-  flag?: string
-  region?: string | null
-  city?: string | null
-  postal?: string | null
-  asn?: { name: string }
-  carrier?: { name: string }
-  time_zone?: { name: string }
+  location?: {
+    country: string
+    country_code: string
+    state?: string
+    city?: string
+    timezone: string
+  }
+  isp?: {
+    isp: string
+  }
 }
 
 interface Weather {
