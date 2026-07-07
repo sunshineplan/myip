@@ -9,7 +9,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@sveltejs/vite-plugin-svelte": "^7.1.4",
     "@tsconfig/svelte": "^5.0.8",
     "@types/node": "^26.1.0",
     "ipaddr.js": "^2.4.0",
